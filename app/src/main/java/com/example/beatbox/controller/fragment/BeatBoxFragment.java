@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import java.util.List;
 
 
 public class BeatBoxFragment extends Fragment {
+    public static final int SPAN_COUNT = 2;
     //region defind variable
     private RecyclerView mRecyclerView;
     private SoundListAdapter mSoundListAdapter;
@@ -48,7 +50,7 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSoundRepository = SoundRepository.getInstance();
+        mSoundRepository = SoundRepository.getInstance(getContext());
     }
 
     @Override
@@ -57,11 +59,13 @@ public class BeatBoxFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_beat_box, container, false);
         findViews(view);
+        initViews();
+        UpdateUI();
         return view;
     }
 
     void initViews(){
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),GridLayoutManager.DEFAULT_SPAN_COUNT));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
     }
 
     private void UpdateUI(){
@@ -71,6 +75,7 @@ public class BeatBoxFragment extends Fragment {
         }else{
             mSoundListAdapter.setSoundList(sounds);
         }
+        mRecyclerView.setAdapter(mSoundListAdapter);
         mSoundListAdapter.notifyDataSetChanged();
     }
 

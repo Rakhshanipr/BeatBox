@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.beatbox.R;
+import com.example.beatbox.controller.fragment.BeatBoxFragment;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
@@ -19,11 +20,11 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container_activityBeatBox);
         if (fragment == null) {
             fragmentManager
                     .beginTransaction()
-                    .add(R.id.fragment_container, createFragment())
+                    .add(R.id.fragment_container_activityBeatBox,createFragment())
                     .commit();
         }
     }
