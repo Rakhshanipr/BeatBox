@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -13,17 +14,20 @@ import android.widget.Button;
 
 import com.example.beatbox.R;
 import com.example.beatbox.model.Sound;
+import com.example.beatbox.repository.SoundRepository;
 
 import java.util.List;
 
 
 public class BeatBoxFragment extends Fragment {
+    //region defind variable
     private RecyclerView mRecyclerView;
+    private SoundListAdapter mSoundListAdapter;
+    SoundRepository mSoundRepository;
 
-    public BeatBoxFragment() {
-        // Required empty public constructor
-    }
+    //endregion
 
+    //regiondefind static method and variable
 
     public static BeatBoxFragment newInstance() {
         BeatBoxFragment fragment = new BeatBoxFragment();
@@ -32,9 +36,19 @@ public class BeatBoxFragment extends Fragment {
         return fragment;
     }
 
+    //endregion
+
+
+    public BeatBoxFragment() {
+        // Required empty public constructor
+    }
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSoundRepository = SoundRepository.getInstance();
     }
 
     @Override
@@ -44,6 +58,20 @@ public class BeatBoxFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_beat_box, container, false);
         findViews(view);
         return view;
+    }
+
+    void initViews(){
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),GridLayoutManager.DEFAULT_SPAN_COUNT));
+    }
+
+    private void UpdateUI(){
+        List<Sound> sounds=mSoundRepository.getSoundList();
+        if (mSoundListAdapter==null){
+            mSoundListAdapter=new SoundListAdapter(sounds);
+        }else{
+            mSoundListAdapter.setSoundList(sounds);
+        }
+        mSoundListAdapter.notifyDataSetChanged();
     }
 
     private void findViews(View view) {
