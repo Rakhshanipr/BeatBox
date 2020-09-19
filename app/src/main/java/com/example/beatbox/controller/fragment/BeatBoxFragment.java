@@ -9,8 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.beatbox.R;
+import com.example.beatbox.model.Sound;
+
+import java.util.List;
 
 
 public class BeatBoxFragment extends Fragment {
@@ -37,38 +41,63 @@ public class BeatBoxFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_beat_box, container, false);
+        View view = inflater.inflate(R.layout.fragment_beat_box, container, false);
         findViews(view);
         return view;
     }
 
     private void findViews(View view) {
-        mRecyclerView=view.findViewById(R.id.recyclerView_fragmentBeatBox_list);
+        mRecyclerView = view.findViewById(R.id.recyclerView_fragmentBeatBox_list);
     }
 
-    class SoundViewHolder extends RecyclerView.ViewHolder{
+    class SoundViewHolder extends RecyclerView.ViewHolder {
+
+        Button mButtonSound;
 
         public SoundViewHolder(@NonNull View itemView) {
             super(itemView);
+            mButtonSound = itemView.findViewById(R.id.button_SoundListItem_sound);
+        }
+
+        void bind(Sound sound) {
+            mButtonSound.setText(sound.getName());
         }
     }
 
-    class SoundListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    class SoundListAdapter extends RecyclerView.Adapter<SoundViewHolder> {
+
+        List<Sound> mSoundList;
+
+        public SoundListAdapter(List<Sound> soundList) {
+            mSoundList = soundList;
+        }
+
+        public List<Sound> getSoundList() {
+            return mSoundList;
+        }
+
+        public void setSoundList(List<Sound> soundList) {
+            mSoundList = soundList;
+        }
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+        public SoundViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(getContext())
+                    .inflate(R.layout.sound_list_item, parent, false);
+            return new SoundViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull SoundViewHolder holder, int position) {
+
+            holder.bind(mSoundList.get(position));
 
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return mSoundList.size();
         }
     }
 }
