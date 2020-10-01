@@ -45,6 +45,11 @@ public class SoundRepository {
 
     //endregion
 
+
+    public SoundPool getSoundPool() {
+        return mSoundPool;
+    }
+
     private SoundRepository(Context context) {
         //TODO: fill soundList
         mSoundList = new ArrayList<>();
@@ -82,8 +87,5 @@ public class SoundRepository {
         mSoundList = soundList;
     }
 
-    public void Play(Sound sound){
-        if (sound.getSoundId()==null)
-            return;
-    }
+
 }

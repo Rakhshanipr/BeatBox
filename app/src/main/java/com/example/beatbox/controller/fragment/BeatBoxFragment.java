@@ -16,6 +16,7 @@ import android.widget.Button;
 import com.example.beatbox.R;
 import com.example.beatbox.model.Sound;
 import com.example.beatbox.repository.SoundRepository;
+import com.example.beatbox.utils.SoundUtils;
 
 import java.util.List;
 
@@ -24,7 +25,6 @@ public class BeatBoxFragment extends Fragment {
     public static final int SPAN_COUNT = 2;
     //region defind variable
     private RecyclerView mRecyclerView;
-    private SoundListAdapter mSoundListAdapter;
     SoundRepository mSoundRepository;
 
     //endregion
@@ -51,6 +51,8 @@ public class BeatBoxFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSoundRepository = SoundRepository.getInstance(getContext());
+
+        setRetainInstance(true);
     }
 
     @Override
@@ -64,19 +66,21 @@ public class BeatBoxFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSoundRepository.getSoundPool().release();
+    }
+
     void initViews(){
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
     }
 
     private void UpdateUI(){
         List<Sound> sounds=mSoundRepository.getSoundList();
-        if (mSoundListAdapter==null){
-            mSoundListAdapter=new SoundListAdapter(sounds);
-        }else{
-            mSoundListAdapter.setSoundList(sounds);
-        }
-        mRecyclerView.setAdapter(mSoundListAdapter);
-        mSoundListAdapter.notifyDataSetChanged();
+        SoundListAdapter SoundListAdapter=new SoundListAdapter(sounds);
+        mRecyclerView.setAdapter(SoundListAdapter);
+        SoundListAdapter.notifyDataSetChanged();
     }
 
     private void findViews(View view) {
@@ -90,10 +94,18 @@ public class BeatBoxFragment extends Fragment {
         public SoundViewHolder(@NonNull View itemView) {
             super(itemView);
             mButtonSound = itemView.findViewById(R.id.button_SoundListItem_sound);
+
         }
 
-        void bind(Sound sound) {
+
+        void bind(final Sound sound) {
             mButtonSound.setText(sound.getName());
+            mButtonSound.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SoundUtils.Play(mSoundRepository.getSoundPool(),sound);
+                }
+            });
         }
     }
 
